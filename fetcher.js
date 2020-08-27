@@ -1,25 +1,25 @@
 const request = require('request');
 const fs = require('fs');
 
-const args = process.argv.slice(2);
-//first arg, http://www.example.edu/  
-//https://www.google.com/fdsafsafsa.html
-//second arg should be  ./index.html  
-//print message: Downloaded and saved 1235 bytes to ./index.html
-
-request(args[0], (error, response, body) => {
+// takes url and local file path and download the resource to file path
+//callback
+const input = process.argv.slice(2);
   
-  fs.writeFile(args[1], body, (err) => {
-    if (err) {    //local filepath invalid handler
-      console.log("invalid path / file DNE", err);
-    } else if (error || response.statusCode !== 200) { //URL error handler
+  
+request(input[0], (error, response, body) => {
+  
+  fs.writeFile(input[1], body, (err) => {
+    if (err) throw err;
+    else if (error || response.statusCode !== 200) {
       console.log('Error occurred, see below: \n', error, '\n', response.statusCode);
       return;
     } else {
-      const pageSize = fs.statSync(args[1]).size;
-      console.log(`Downloaded and saved ${pageSize} to ${args[1]}`);
+      const pageSize = fs.statSync(input[1]).size;
+      console.log(`Downloaded and saved ${pageSize} bytes to ${input[1]}`);
     }
   });
 });
+  
 
-
+// input: node fetcher.js http://www.example.edu/ ./index.html
+// exp-out: Downloaded and saved 1235 bytes to ./index.html
